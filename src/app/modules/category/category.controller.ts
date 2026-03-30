@@ -6,12 +6,10 @@ import catchAsync from "../../../utils/catchAsync";
 export const createCategory = catchAsync(async (req: Request, res: Response) => {
   const { name } = req.body;
   
-  /** * 'Expected 3 arguments' এরর দূর করতে 'req.user' থেকে 
-   * userId এবং role নেওয়া হয়েছে।
-   */
+ 
   const user = (req as any).user; 
 
-  // এখন ৩টি আর্গুমেন্টই পাঠানো হচ্ছে: name, userId, role
+ 
   const category = await categoryService.createCategory(
     name, 
     user.id as string, 
