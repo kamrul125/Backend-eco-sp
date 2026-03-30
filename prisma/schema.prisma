@@ -1,0 +1,142 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ১. ইউজার রোল এনাম
+enum UserRole {
+  ADMIN
+  MEMBER
+}
+
+// ২. আইডিয়া স্ট্যাটাস এনাম
+enum IdeaStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+}
+
+// ৩. ভোট টাইপ এনাম
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
+}
+
+// ৪. ইউজার মডেল
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(MEMBER)
+  
+  // Relations
+  ideas     Idea[]
+  votes     Vote[]
+  comments  Comment[]
+  payments  Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// ৫. ক্যাটাগরি মডেল
+model Category {
+  id    String @id @default(uuid())
+  name  String @unique
+  ideas Idea[]
+
+  @@map("categories")
+}
+
+// ৬. আইডিয়া মডেল
+model Idea {
+  id          String     @id @default(uuid())
+  title       String
+  description String
+  status      IdeaStatus @default(DRAFT)
+  isPaid      Boolean    @default(false)
+  price       Float      @default(0) 
+  
+  // Relations
+  authorId    String
+  author      User       @relation(fields: [authorId], references: [id])
+  
+  categoryId  String
+  category    Category   @relation(fields: [categoryId], references: [id])
+  
+  // onDelete: Cascade যোগ করা হয়েছে যাতে আইডিয়া ডিলিট হলে ভোট/কমেন্টও চলে যায়
+  votes       Vote[]
+  comments    Comment[]
+  payments    Payment[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("ideas")
+}
+
+// ৭. ভোটিং সিস্টেম মডেল (সংশোধিত) ✅
+model Vote {
+  id     String   @id @default(uuid())
+  type   VoteType 
+  
+  userId String
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  ideaId String
+  idea   Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // এটি নিশ্চিত করে এক ইউজার এক আইডিয়াতে একবারই ভোট দিতে পারবে
+  @@unique([userId, ideaId]) 
+  @@map("votes")
+}
+
+// ৮. কমেন্ট মডেল (রিপ্লাই সিস্টেমসহ)
+model Comment {
+  id        String    @id @default(uuid())
+  content   String    
+  
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  ideaId    String
+  idea      Idea      @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+
+  // সেলফ-রিলেশন (Replies)
+  parentId  String?
+  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   Comment[] @relation("CommentReplies")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("comments")
+}
+
+// ৯. পেমেন্ট মডেল
+model Payment {
+  id            String   @id @default(uuid())
+  transactionId String   @unique
+  amount        Float
+  status        String   @default("PENDING") 
+  
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  
+  ideaId        String
+  idea          Idea     @relation(fields: [ideaId], references: [id])
+
+  createdAt     DateTime @default(now())
+  @@map("payments")
+}
