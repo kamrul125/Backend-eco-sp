@@ -1,22 +1,17 @@
 import { Router } from "express";
-import * as ideaController from "./idea.controller";
-import protect from "../../../middlewares/auth.middleware";
+import * as ideaController from "./idea.controller"; // কন্ট্রোলার ইমপোর্ট করুন
+import auth from "../../../middlewares/auth.middleware"; // প্রোটেক্ট মিডলওয়্যার
 
 const router = Router();
 
-// ১. Public Routes
-router.get("/", ideaController.getAllIdeas); 
+router.get("/", ideaController.getAllIdeas);
 router.get("/:id", ideaController.getIdeaById);
 
-// ২. User Protected Routes
-router.post("/", protect(), ideaController.createIdea);
-router.put("/:id", protect(), ideaController.updateIdea);
+router.post("/", auth("USER", "ADMIN"), ideaController.createIdea);
+router.put("/:id", auth("USER", "ADMIN"), ideaController.updateIdea);
+router.patch("/approve/:id", auth("ADMIN"), ideaController.approveIdea);
+router.patch("/reject/:id", auth("ADMIN"), ideaController.rejectIdea);
+router.delete("/:id", auth("USER", "ADMIN"), ideaController.deleteIdea);
 
-// ৩. Admin Specific Routes (Must be above generic :id routes if conflicts occur)
-router.patch("/approve/:id", protect("ADMIN"), ideaController.approveIdea);
-router.patch("/reject/:id", protect("ADMIN"), ideaController.rejectIdea);
-
-// ৪. Delete Route (Placed at the bottom to avoid prefix conflicts)
-router.delete("/:id", protect(), ideaController.deleteIdea);
-
-export default router;
+// ✅ এটিই index.ts এ ইমপোর্ট হবে
+export const ideaRoutes = router;
