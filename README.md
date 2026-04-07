@@ -12,7 +12,7 @@ A full-featured backend API for an idea-sharing platform where users can submit 
 * 📂 Category Management
 * 👍 Voting System (Upvote / Downvote)
 * 💰 Paid Idea Access System
-* 💬 Comment System (Nested replies)
+* 💬 Comment System 
 * 🔍 Search & Filter + Pagination
 * ⚠️ Global Error Handling
 
@@ -198,10 +198,9 @@ DRAFT → UNDER_REVIEW → APPROVED → REJECTED
 * Advanced analytics dashboard
 
 ---
-
-## 👨‍💻 Author
-
-**Md Kamruzzaman**
+👨‍💻 Author
+Md Kamruzzaman
+Full-Stack Web Developer
 
 ---
 
