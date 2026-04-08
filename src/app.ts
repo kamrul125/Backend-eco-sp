@@ -1,36 +1,36 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
-import cookieParser from "cookie-parser"; // ✅ এটি অবশ্যই লাগবে যদি credentials: true ব্যবহার করেন
+import cookieParser from "cookie-parser"; 
 import router from "./routes";
 
 const app: Application = express();
 
-// ✅ ১. CORS Configuration
+// ✅ ১. CORS Configuration: এখানে আপনার ফ্রন্টএন্ডের লাইভ লিঙ্কটি দিন
 app.use(
   cors({
     origin: [
       "http://localhost:5173", 
-      "https://eco-spark-hub.vercel.app", // 👈 আপনার ফ্রন্টএন্ডের আসল লাইভ লিঙ্কটি এখানে দিন
+      "https://eco-spark-hub.vercel.app", // আপনার ফ্রন্টএন্ডের আসল লাইভ লিঙ্ক
     ],
-    credentials: true, // ✅ কুকি বা টোকেন আদান-প্রদানের জন্য এটি জরুরি
+    credentials: true, 
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
   })
 );
 
 // ✅ ২. Middlewares
-app.use(cookieParser()); // ✅ কুকি রিড করার জন্য এটি লাগবেই
+app.use(cookieParser()); 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // ✅ ৩. API Routes
 app.use("/api/v1", router);
 
-// ✅ ৪. Health Check Route
+// ✅ ৪. Health Check Route: আপনার নতুন লিঙ্ক (https://backend-eco-spark1.vercel.app/) এ ঢুকলে এটি দেখাবে
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
-    message: "🚀 Eco Spark Hub Backend Running Perfectly",
+    message: "🚀 Eco Spark Hub Backend Running Perfectly at https://backend-eco-spark1.vercel.app/",
   });
 });
 
@@ -50,7 +50,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   res.status(statusCode).json({
     success: false,
     message,
-    error: process.env.NODE_ENV === "development" ? err : null, // প্রোডাকশনে এরর ডিটেইলস হাইড করা থাকবে
+    error: process.env.NODE_ENV === "development" ? err : null,
     stack: process.env.NODE_ENV === "development" ? err.stack : null,
   });
 });
