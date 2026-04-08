@@ -5,12 +5,13 @@ import router from "./routes";
 
 const app: Application = express();
 
-// ✅ CORS
+// ✅ CORS (এখানে আপনার বর্তমান লাইভ ফ্রন্টএন্ড লিঙ্কটি যোগ করা হয়েছে)
 app.use(
   cors({
     origin: [
       "http://localhost:5173",
       "https://eco-spark-hub.vercel.app",
+      "https://ecospark-frontend-iota.vercel.app", // 👈 এই লাইনটিই আপনার সমস্যার সমাধান!
     ],
     credentials: true,
   })
