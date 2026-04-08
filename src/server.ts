@@ -1,8 +1,16 @@
-// src/server.ts
-import app from './app';
+import { Server } from "http";
+import app from "./app";
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+let server: Server;
+
+// 🔥 Only run locally
+if (process.env.NODE_ENV !== "production") {
+  server = app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+}
+
+// ✅ Vercel handler
+export default app;

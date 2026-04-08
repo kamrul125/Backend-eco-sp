@@ -1,35 +1,46 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import router from './routes'; 
+import express, { Application, Request, Response, NextFunction } from "express";
+import cors from "cors";
+import router from "./routes";
 
 const app: Application = express();
 
-// ✅ CORS আপডেট: আপনার লগের ডোমেইনটি সরাসরি যুক্ত করা হয়েছে
-app.use(cors({
-  origin: [
-    "http://localhost:3000", 
-    "http://localhost:5173",
-    "https://ecospark-frontend-f5vj44lhg-md-kamruzzamans-projects-8608facf.vercel.app"
-  ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+// ✅ ১. CORS Configuration
+// আলাদা করে app.options() দরকার নেই, cors() মিডলওয়্যার নিজেই OPTIONS রিকোয়েস্ট হ্যান্ডেল করে
+app.use(
+  cors({
+    origin: true, 
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
+// ✅ ২. Body parser
 app.use(express.json());
 
-// API Routes
-app.use('/api/v1', router); 
+// ✅ ৩. API Routes
+app.use("/api/v1", router);
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Eco Spark Hub Server Running 🚀');
+// ✅ ৪. Health Check Route
+app.get("/", (req: Request, res: Response) => {
+  res.status(200).send("🚀 Eco Spark Hub Backend Running");
 });
 
-// 404 Handler
+// ✅ ৫. 404 Handler
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
     message: `Route Not Found: ${req.originalUrl}`,
+  });
+});
+
+// ✅ ৬. Global Error Handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+    error: process.env.NODE_ENV === "development" ? err : {},
   });
 });
 
