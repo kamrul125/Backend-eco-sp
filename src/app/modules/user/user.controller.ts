@@ -1,7 +1,6 @@
 import { Response } from "express";
 import sendResponse from "../../../helpers/response"; 
 import catchAsync from "../../../utils/catchAsync"; 
-// ✅ আপনার config ফোল্ডারের prisma ইমপোর্ট (Named Export অনুযায়ী)
 import { prisma } from "../../../config/prisma"; 
 
 /**
@@ -22,7 +21,7 @@ export const getMe = catchAsync(async (req: any, res: Response) => {
  * অ্যাডমিন প্যানেলের জন্য সব ইউজার লিস্ট নিয়ে আসা
  */
 export const getAllUsers = catchAsync(async (req: any, res: Response) => {
-  // ✅ আপনার স্কিমা অনুযায়ী কলামগুলো সিলেক্ট করা হয়েছে
+ 
   const users = await prisma.user.findMany({
     select: {
       id: true,
@@ -31,10 +30,10 @@ export const getAllUsers = catchAsync(async (req: any, res: Response) => {
       role: true,
       createdAt: true,
       updatedAt: true,
-      // ❌ status বাদ দেওয়া হয়েছে কারণ আপনার schema.prisma-তে এটি নেই
+     
     },
     orderBy: {
-      createdAt: 'desc' // নতুন ইউজাররা সবার উপরে থাকবে
+      createdAt: 'desc' 
     }
   });
 

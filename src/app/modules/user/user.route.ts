@@ -1,5 +1,4 @@
 import { Router } from "express";
-// Namespace import ব্যবহার করা হয়েছে যাতে 'no exported member' এরর না আসে
 import * as userController from "./user.controller";
 import auth from "../../../middlewares/auth.middleware";
 

@@ -12,7 +12,7 @@ const getMyProfile = async (userId: string) => {
       role: true,
       createdAt: true,
       updatedAt: true,
-      // পাসওয়ার্ড বাদ দিয়ে বাকি সব ডাটা আসবে
+      
     },
   });
 

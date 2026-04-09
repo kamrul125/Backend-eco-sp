@@ -5,7 +5,7 @@ import router from "./routes";
 
 const app: Application = express();
 
-// ✅ CORS (এখানে আপনার বর্তমান লাইভ ফ্রন্টএন্ড লিঙ্কটি যোগ করা হয়েছে)
+
 app.use(
   cors({
     origin: [

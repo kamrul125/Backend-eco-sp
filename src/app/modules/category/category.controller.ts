@@ -6,7 +6,7 @@ import catchAsync from "../../../utils/catchAsync";
 export const createCategory = catchAsync(async (req: Request, res: Response) => {
   const { name } = req.body;
   
-  // মিডলওয়্যার থেকে ইউজার ডাটা নেওয়া হচ্ছে
+ 
   const user = (req as any).user; 
 
   const category = await categoryService.createCategory(
@@ -15,7 +15,7 @@ export const createCategory = catchAsync(async (req: Request, res: Response) => 
     user.role as string
   );
 
-  // সরাসরি রেসপন্স পাঠানো হচ্ছে (যাতে প্যাথ এরর না আসে)
+ 
   res.status(201).json({
     success: true,
     message: "Category created successfully",
@@ -23,9 +23,9 @@ export const createCategory = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
-// ২. সব ক্যাটাগরি গেট করা (Get All Categories)
+
 export const getCategories = catchAsync(async (req: Request, res: Response) => {
-  // সার্ভিস ফাইল থেকে সব ক্যাটাগরি নিয়ে আসা
+  
   const categories = await categoryService.getAllCategories();
 
   // সরাসরি রেসপন্স পাঠানো হচ্ছে

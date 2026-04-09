@@ -6,4 +6,4 @@ const catchAsync = (fn: RequestHandler) => {
   };
 };
 
-export default catchAsync; // নিশ্চিত করুন এখানে 'default' লেখা আছে
+export default catchAsync; 

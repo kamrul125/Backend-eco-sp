@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as voteController from "./vote.controller"; // এই লাইনটি চেক করুন
+import * as voteController from "./vote.controller"; 
 import protect from "../../../middlewares/auth.middleware";
 
 const router = Router();

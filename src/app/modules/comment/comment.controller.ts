@@ -5,7 +5,7 @@ import catchAsync from "../../../utils/catchAsync";
 // তৈরি করা
 export const handleCreateComment = catchAsync(async (req: Request, res: Response) => {
   const user = (req as any).user;
-  // ✅ টাইপ কাস্টিং: String() ব্যবহার করা হয়েছে এরর দূর করতে
+ 
   const ideaId = String(req.params.ideaId); 
   const { content, parentId } = req.body;
 

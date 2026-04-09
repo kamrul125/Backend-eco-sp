@@ -14,13 +14,13 @@ async function main() {
       email: 'admin@gmail.com',
       name: 'Admin',
       password: hashedPassword,
-      role: 'ADMIN', // আপনার এনাম অনুযায়ী
+      role: 'ADMIN', 
     },
   });
 
   console.log('✅ Admin user created/verified:', admin.email);
 
-  // ২. ক্যাটাগরিগুলো তৈরি করা (যা স্টুডিওতে সেভ হচ্ছিল না)
+ 
   const categories = [
     { name: 'Waste' },
     { name: 'Energy' },

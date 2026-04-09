@@ -49,10 +49,7 @@ export const handleVote = catchAsync(async (req: Request, res: Response) => {
   res.status(200).json({ success: true, data: result });
 });
 
-/** * ✅ কমেন্ট যোগ করা (ফিক্স করা হয়েছে)
- * ফ্রন্টএন্ড থেকে { text: "..." } আকারে ডাটা আসবে। 
- * আমরা সরাসরি req.body সার্ভিস-এ পাঠিয়ে দিচ্ছি।
- */
+
 export const addComment = catchAsync(async (req: Request, res: Response) => {
   const user = (req as any).user;
   const ideaId = String(req.params.id);

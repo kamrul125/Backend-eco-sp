@@ -5,7 +5,7 @@ export const purchaseIdea = async (userId: string, ideaId: string) => {
   // ১. ডাটাবেস থেকে আইডি দিয়ে Idea খোঁজা
   const dbIdea = await prisma.idea.findUnique({ where: { id: ideaId } });
   
-  // 🔄 যদি ডাটাবেসে না থাকে, তবে একটি ডিফল্ট অবজেক্ট তৈরি করি যাতে TS এরর না দেয়
+ 
   const idea = dbIdea || {
     id: ideaId,
     title: "EcoSpark Pro Membership",
