@@ -29,7 +29,11 @@ export const getAllIdeas = async (query: any) => {
       author: true, 
       category: true,
       comments: {
-        include: { user: true },
+        where: { parentId: null }, // ফিডে শুধু মেইন কমেন্ট দেখাবে
+        include: { 
+          user: true,
+          replies: { include: { user: true } }
+        },
         orderBy: { createdAt: 'desc' }
       }
     },
@@ -44,7 +48,11 @@ export const getMyIdeas = async (userId: string) => {
     include: { 
       category: true,
       comments: {
-        include: { user: true },
+        where: { parentId: null },
+        include: { 
+          user: true,
+          replies: { include: { user: true } }
+        },
         orderBy: { createdAt: 'desc' }
       }
     },
@@ -52,7 +60,7 @@ export const getMyIdeas = async (userId: string) => {
   });
 };
 
-// ৪. আইডি দিয়ে আইডিয়া গেট করা (রিপ্লাই সাপোর্টসহ)
+// ৪. আইডি দিয়ে আইডিয়া গেট করা (রিপ্লাই সাপোর্টসহ ফুল আপডেট)
 export const getIdeaById = async (id: string) => {
   return await prisma.idea.findUnique({ 
     where: { id }, 
@@ -60,15 +68,16 @@ export const getIdeaById = async (id: string) => {
       author: true, 
       category: true,
       comments: {
+        // শুধুমাত্র মেইন কমেন্টগুলো টপ লেভেলে আসবে
+        where: { parentId: null },
         include: { 
           user: true,
-          // কমেন্টের ভেতরের রিপ্লাইগুলোকেও এখানে নিয়ে আসবে
+          // কমেন্টের ভেতরের রিপ্লাইগুলোকেও সাথে নিয়ে আসবে
           replies: {
-            include: { user: true }
+            include: { user: true },
+            orderBy: { createdAt: 'asc' } // রিপ্লাইগুলো সময়ের ক্রমানুসারে আসবে
           }
         },
-        // শুধুমাত্র মেইন কমেন্টগুলো আগে দেখাবে (যাদের parentId নেই)
-        where: { parentId: null },
         orderBy: { createdAt: 'desc' }
       }
     } 
@@ -115,10 +124,10 @@ export const toggleVote = async (userId: string, ideaId: string) => {
   }
 };
 
-// ৮. কমেন্ট এবং রিপ্লাই যোগ করা (একই ফাংশনে দুটি কাজ হবে)
+// ৮. কমেন্ট এবং রিপ্লাই যোগ করা
 export const addCommentIntoDB = async (ideaId: string, userId: string, commentData: any) => {
   const text = commentData.text || commentData.content;
-  const parentId = commentData.parentId || null; // ফ্রন্টএন্ড থেকে রিপ্লাই দিলে parentId আসবে
+  const parentId = commentData.parentId || null; 
   
   if (!text) {
     throw new Error("কমেন্টে কিছু লেখা প্রয়োজন!");
@@ -136,7 +145,7 @@ export const addCommentIntoDB = async (ideaId: string, userId: string, commentDa
     }
   });
 
-  // আইডিয়াতে কমেন্ট কাউন্ট বাড়ানো (রিপ্লাই করলেও কাউন্ট বাড়বে)
+  // আইডিয়াতে কমেন্ট কাউন্ট আপডেট
   await prisma.idea.update({
     where: { id: ideaId },
     data: { commentCount: { increment: 1 } },
